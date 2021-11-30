@@ -1,28 +1,15 @@
-# Unity week 5: Two-dimensional scene-building and path-finding
+# Unity week 7: Two-dimensional scene-building and path-finding
 
-A project with step-by-step scenes illustrating how to construct a 2D scene using tilemaps,
-and how to do path-finding using the BFS algorithm.
+Improvements from the original code:
 
-Text explanations are available 
-[here](https://github.com/gamedev-at-ariel/gamedev-5782) in folder 07.
+1) We decided to implement the path-finding algorithm - A* (A-star).
 
-## Cloning
-To clone the project, you may need to install git lfs first:
+2) We made "slow-tile", tiles which slow the player advancement and included it in our a* algorithm.
 
-    git lfs install 
+3) We created a map-generator that accepts an array of tiles and generate a map using those tiles. The current optimal map outcomes is using 3 tiles, just like in the game in this browser.
 
+4) You can mine the rocks using the x + arrow buttons, you have to stand next to the rock and use the arrow that points to it!
 
-## Credits
+*  After generating a random map you might get stuck inside a rock, you can just carve your way out!
 
-Graphics:
-* [Ultima 4 Graphics](https://github.com/jahshuwaa/u4graphics) by Joshua Steele.
-
-Online course:
-* [Unity 2D](https://www.udemy.com/course/unitycourse/learn/lecture/10246496), a Udemy course by Gamedev.tv.
-* [Unity RPG](https://www.gamedev.tv/p/unity-rpg/?product_id=1503859&coupon_code=JOINUS).
-
-Procedural generation:
-* [Habrador - Unity Programming Patterns](https://github.com/Habrador/Unity-Programming-Patterns#7-double-buffer)
-
-Programming:
-* Erel Segal-Halevi
+Have fun!
