@@ -12,6 +12,10 @@ Improvements from the original code:
 
 *  After generating a random map you might get stuck inside a rock, you can just carve your way out!
 
+Itch.io Link:
+
+https://eliavamar.itch.io/cavemanweek7
+
 Have fun!
 
 
