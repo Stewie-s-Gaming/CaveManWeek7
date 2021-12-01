@@ -289,3 +289,98 @@ public class TargetMoverAstar : MonoBehaviour
 ```
 
 כמעט זהה למחלקת MoveTarget המקורית אך עם שינוי לפונקציה אשר אליה הוא קורא והארגומנטים אותם הוא מעביר.
+
+
+
+
+# שינויים נוספים שערכנו בקוד
+
+## חציבה בסלע
+
+יצרנו סקריפט אשר מאפשר לשחקן, בעזרת לחיצה על לחצן ה-X בשילוב עם חץ המצביע בכיוון האבן אותו השחקן רוצה לחצוב, להרוס כל אריח מסוג סלע.
+
+```
+    // Update is called once per frame
+    void Update()
+    {
+        Vector3Int offset;
+        if (Input.GetKey(KeyCode.X))
+        {
+            if (Input.GetKey(KeyCode.DownArrow))
+            {
+                offset = new Vector3Int(0, -1, 0);
+            }
+            else if (Input.GetKey(KeyCode.UpArrow))
+            {
+                offset = new Vector3Int(0, 1, 0);
+            }
+            else if (Input.GetKey(KeyCode.RightArrow))
+            {
+                offset = new Vector3Int(1, 0, 0);
+            }
+            else if (Input.GetKey(KeyCode.LeftArrow))
+            {
+                offset = new Vector3Int(-1, 0, 0);
+            }
+            else
+            {
+                return;
+            }
+            Vector3Int myPos = tilemap.WorldToCell(transform.position);
+            Vector3Int tilePos = myPos + offset;
+            Debug.Log("Destroying");
+            if (tilemap.GetTile(tilePos)==Destroyed)
+            {
+                tilemap.SetTile(tilePos,Build);
+            }
+        }
+    }
+
+```
+הסקריפט בודק איזה לחצן נלחץ ביחד עם לחצן ה-X ובודק האם קיים סלע בצמוד לשחקן לכיוון החץ, במידה וקיים הוא הורס אותו ושם אריח מסוג דשא במקומו.
+
+
+## יצירת מפה אקראית
+
+ערכנו שינויים בקוד המקורי של CaveGenerator ויצרנו סקריפט חדש MapGenerator אשר מקבל מערך של אריחים ומייצר מהם מפה אקראית.
+כרגע הסקריפט עובד בצורה אופטימלית על 3 ערכים אך יוכל לעבוד גם על יותר.
+
+```
+    public void SmoothMap()
+    {
+        for (int x = 0; x < gridSize; x++)
+        {
+            for (int y = 0; y < gridSize; y++)
+            {
+                if (x == 0 || x == gridSize - 1 || y == 0 || y == gridSize - 1)
+                {
+                    int rInt = random.Next(0, sizeOfTiles);
+                    bufferNew[x, y] = 1;
+                    continue;
+                }
+                //Uses bufferOld to get the wall count
+                int[] maxObjectSurrounding = GetMaxSurroundingCount(x, y);
+
+                //Use some smoothing rules to generate caves
+                if (maxObjectSurrounding[0] > 3)
+                {
+                    bufferNew[x, y] = maxObjectSurrounding[1];
+                }
+                else
+                {
+                    bufferNew[x, y] = bufferOld[x, y];
+                }
+                
+            }
+        }
+
+        //Swap the pointers to the buffers
+        (bufferOld, bufferNew) = (bufferNew, bufferOld);
+    }
+    
+```
+
+כמו שניתן לראות הקוד דומה מאוד לקוד המקורי אך עם שינויים קטנים, כעת לא קיימות רק 2 אופציות אלא מערך של אריחים אופציונאליים.
+בנוסף, הסיכוי הוא לא סיכוי של חצי-חצי אלא קיימת התפלגות שווה בין הסיכויים לקבל אריחים שונים וגם ה-Smoothing טיפה שונה.
+מכיוון שקיימים הרבה אריחים הסיכוי ש-4 אריחים מאותו סוג יקיפו אריח אקראי הוא יותר נמוך ולכן צריך גם להתאים את התנאים של ההחלקת מפה
+כך שיתאימו למספר האובייקטים.
